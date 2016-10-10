@@ -4,7 +4,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-eval' 'unsafe-inline' ws: gap://ready localhost:*; style-src 'self' 'unsafe-inline'; img-src 'self' data: http://*.mapbox.com http://*.openstreetmap.org;">
+  <meta http-equiv="Content-Security-Policy"
+            content="default-src *;
+                 script-src 'self' 'unsafe-inline' 'unsafe-eval'
+                             localhost:*
+                             https://*.gstatic.com
+                             https://*.googleapis.com
+                             ;
+                 style-src  'self' 'unsafe-inline'
+                             localhost:*
+                             https://*.gstatic.com
+                             https://*.googleapis.com
+                             ;
+                 img-src  'self'
+                             data: http://*.mapbox.com
+                             http://*.openstreetmap.org
+                             https://*.gstatic.com
+                             ;
+  ">
   <title></title>
 
   <link href="lib/ionic/css/ionic.css" rel="stylesheet">
@@ -40,6 +57,8 @@
   <script src="js/services/geofence.js"></script>
   <script src="js/services/geolocation.js"></script>
   <script src="js/directives/hide-keyboard-on-enter.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&sensor=false"></script>
+
 </body>
 
 </html>
