@@ -9,7 +9,7 @@
   <ion-content>
     <ion-list can-swipe="true">
       <ion-item ng-click="editGeofence(geofence)" class="item item-icon-right" ng-repeat="geofence in geofences">
-        <p>{{geofence.notification.text}}</p>
+        <p>{{geofence.notification.title}}</p>
         <i class="icon ion-trash-b" ion-stop-event="click" ng-click="removeGeofence(geofence)"></i>
       </ion-item>
     </ion-list>

@@ -27,7 +27,7 @@ describe("Geofence test", () => {
     function addGeofence(notificationText) {
         const addGeofenceButton = element(by.css(".ion-plus"));
         const saveGeofenceButton = element(by.css(".ion-checkmark"));
-        const notificationTextInput = element(by.model("geofence.notification.text"));
+        const notificationTextInput = element(by.model("geofence.notification.title"));
 
         geoFix(50.28, 18.67);
         addGeofenceButton.click();
