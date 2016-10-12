@@ -1,5 +1,5 @@
 <ion-view title="Geofence details">
-  <ion-header-bar class="bar-positive" align-title="left">
+  <ion-header-bar class="header" align-title="left">
     <div class="buttons pull-left">
       <button class="button button-icon" ui-sref="geofences">
         <i class="ion-chevron-left"></i>
@@ -18,12 +18,14 @@
       <a class="button" ng-class="isTransitionOfType(TransitionType.ENTER) ? 'button-positive' : 'button-light'" ng-click="toggleWhenIgetCloser()">When I get close</a>
       <a class="button" ng-class="isTransitionOfType(TransitionType.EXIT) ? 'button-positive' : 'button-light'" ng-click="toggleWhenIamLeaving()">When I go away</a>
     </div>
+
     <div>
-      <label class="item item-input">
-        <input id="autocomplete_field" type="text" placeholder="Your address" data-tap-disabled="true"
-        ng-change='disableTap()' ng-model="geofence.notification.text">
+      <label class="item item-input controls">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input id="autocomplete_field" type="text" placeholder="Your address" data-tap-disabled="true" ng-change='disableTap()' ng-model="geofence.notification.text">
       </label>
     </div>
+    
     <div class="range" data-tap-disabled="true">
       on
       <input type="range" name="volume" min="50" max="5000" ng-model="paths.circle.radius">
@@ -32,7 +34,7 @@
     <div id="map" data-tap-disabled="true" style="width: 100%; height: 75%"></div>
 
     <!-- <div style="width: 100%; position: absolute; top: 140px; bottom: 0px;" data-tap-disabled="true"> -->
-      <!-- <leaflet resizeable markers="markers" paths="paths" center="center" width="100%" height="100%" event-broadcast="events"></leaflet> -->
+    <!-- <leaflet resizeable markers="markers" paths="paths" center="center" width="100%" height="100%" event-broadcast="events"></leaflet> -->
     <!-- </div> -->
   </ion-content>
 </ion-view>

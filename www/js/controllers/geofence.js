@@ -1,6 +1,5 @@
 angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $ionicLoading, $window, $state,
   geofenceStateParam, Geofence) {
-  console.log('geofenceStateParam: ', geofenceStateParam);
 
   var
     gapi,
@@ -85,16 +84,9 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
     });
   }
 
-  // $scope.$watch('geofence', function() {
-  //   console.log('******************');
-  //   console.log('geofence changed!!!');
-  //   console.log('******************');
-  // });
-
   add_marker($scope.map, $scope.geofence);
 
   function add_marker(map, geofence) {
-    console.log('marker to add: ', geofence);
     var
       latLng,
       marker,
@@ -119,7 +111,6 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
       });
 
       infowindow = new gapi.InfoWindow();
-
       title = geofence.notification.title || geofence.notification.text.split(',')[0];
       infowindow.setContent('<div><strong>' + title + '</strong><br>' + geofence.notification.text + '</div>');
       infowindow.setPosition(latLng);
@@ -129,14 +120,13 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
   }
 
   $scope.disableTap = function() {
-    var container = document.getElementsByClassName('places-container');
-    var backdrop = document.getElementsByClassName('backdrop');
-    var autocomplete_field = document.getElementById('autocomplete_field');
-
+    var container = document.getElementsByClassName('pac-container');
     angular.element(container).attr('data-tap-disabled', 'true');
+    var backdrop = document.getElementsByClassName('backdrop');
     angular.element(backdrop).attr('data-tap-disabled', 'true');
+
     angular.element(container).on("click", function() {
-      autocomplete_field.blur();
+      document.getElementById('autocomplete_field').blur();
     });
   };
 
@@ -179,7 +169,7 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
 
   function validate() {
 
-    if (!$scope.geofence.notification.title) { // TODO: refactor ionicLoading
+    if (!$scope.geofence.notification.title) {
       $ionicLoading.show({
         template: "Please enter some notification text.",
         duration: 3000
@@ -210,3 +200,6 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
 
 // FIXME: InvalidValueError: not a LatLngBounds or LatLngBoundsLiteral: not an Object
 // TODO: replace magic numbers with defined constants
+// TODO: refactor ionicLoading in validate()
+// TODO: make it easy to change css theme
+// TODO: alert user if no network while using google maps autocomplete

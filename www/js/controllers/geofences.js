@@ -17,8 +17,13 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
   });
 
   $scope.createNew = function() {
+    // $state.go("geofence-new", {
+    //   latitude: 40.74095729999999,
+    //   longitude: -74.00211869999998
+    // });
+
     $ionicLoading.show({
-      template: "Obtaining current location...",
+      template: "Loading map...",
       hideOnStateChange: true
     });
 
@@ -28,10 +33,8 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
           $log.info("Current position found", position);
 
           $state.go("geofence-new", {
-            // latitude: position.coords.latitude,
-            // longitude: position.coords.longitude
-            latitude: 40.74095729999999,
-            longitude: -74.00211869999998
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
           });
         },
         function(reason) {
@@ -67,7 +70,11 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
         return true;
       },
       buttonClicked: function() {
-        window.location.href = "cdvtests/index.html";
+        $ionicLoading.show({
+          template: "Come back tmrw :D",
+          duration: 1500
+        });
+        // window.location.href = "cdvtests/index.html";
       }
     });
   };
