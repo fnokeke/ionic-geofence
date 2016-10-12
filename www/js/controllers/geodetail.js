@@ -12,7 +12,7 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
       lat: 40.74095729999999,
       lng: -74.00211869999998,
     },
-    zoom: 13,
+    zoom: 16,
     disableDefaultUI: true, // DISABLE MAP TYPE
     scrollwheel: false
   };
@@ -21,24 +21,36 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
   $scope.geofence = geofenceStateParam;
   $scope.TransitionType = $window.TransitionType;
 
-  $scope.markers = {
-    marker: {
-      draggable: true,
-      message: $scope.geofence.notification.title,
-      lat: $scope.geofence.latitude,
-      lng: $scope.geofence.longitude,
-      icon: {}
+  $scope.circle = new gapi.Circle({
+    map: $scope.map,
+    radius: 150,
+    strokeColor: "#FF0000",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: "#FF0000",
+    fillOpacity: 0.35
+  });
+
+  console.log('just starting radius: ', geofence.radius);
+
+  $scope.marker = new gapi.Marker({
+    map: $scope.map,
+    icon: {
+      url: 'https://maps.gstatic.com/mapfiles/circle.png',
+      anchor: new gapi.Point(10, 10),
+      scaledSize: new gapi.Size(10, 17)
     }
+  });
+
+  $scope.updateRadius = function() {
+    console.log('addradius called');
+
+    $scope.circle.bindTo('center', $scope.marker, 'position');
+    var radius = $scope.geofence.radius ? parseInt($scope.geofence.radius) : 100;
+    $scope.circle.setRadius(radius);
   };
 
-  $scope.paths = {
-    circle: {
-      type: "circle",
-      radius: $scope.geofence.radius,
-      latlngs: $scope.markers.marker,
-      clickable: false
-    }
-  };
+  $scope.updateRadius();
 
   add_autocomplete_address($scope.map);
 
@@ -48,7 +60,7 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
       options,
       autocomplete;
 
-    // Bias the autocomplete object to the user's geographical location FIXME: why auto-location not working for maps
+    // Bias the autocomplete object to the user's geographical location
     // as supplied by the browser's 'navigator.geolocation' object.
     defaultBounds = new gapi.LatLngBounds(new gapi.LatLng(40.74095729999999, -74.00211869999998));
     options = {
@@ -87,7 +99,6 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
   function add_marker(map, geofence) {
     var
       latLng,
-      marker,
       title,
       infowindow;
 
@@ -98,21 +109,12 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
     map.setCenter(latLng);
 
     if (geofence.notification.text) {
-      marker = new gapi.Marker({
-        map: map,
-        position: latLng,
-        icon: {
-          url: 'https://maps.gstatic.com/mapfiles/circle.png',
-          anchor: new gapi.Point(10, 10),
-          scaledSize: new gapi.Size(10, 17)
-        }
-      });
-
+      $scope.marker.setPosition(latLng);
       infowindow = new gapi.InfoWindow();
       title = geofence.notification.title || geofence.notification.text.split(',')[0];
       infowindow.setContent('<div><strong>' + title + '</strong><br>' + geofence.notification.text + '</div>');
       infowindow.setPosition(latLng);
-      infowindow.open(map, marker);
+      infowindow.open(map, $scope.marker);
     }
 
   }
@@ -146,11 +148,8 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
 
   $scope.save = function() {
     if (validate()) {
-      $scope.geofence.radius = parseInt($scope.paths.circle.radius);
+      $scope.geofence.radius = parseInt($scope.geofence.radius);
       $scope.geofence.notification.data = angular.copy($scope.geofence);
-
-      // $scope.geofence.latitude = $scope.markers.marker.lat;
-      // $scope.geofence.longitude = $scope.markers.marker.lng;
 
       GeoService.addOrUpdate($scope.geofence).then(function() {
         console.log('geofence added: ', $scope.geofence);
@@ -200,4 +199,3 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
 // TODO: refactor ionicLoading in validate()
 // TODO: make it easy to change css theme
 // TODO: alert user if no network while using google maps autocomplete
-// TODO: show radius in address chosen

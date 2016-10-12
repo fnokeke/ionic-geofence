@@ -9,7 +9,7 @@ angular.module("ionic-geofence").factory("GeoService", function($rootScope, $win
         id: $window.UUIDjs.create().toString(),
         latitude: 40.74095729999999,
         longitude: -74.00211869999998,
-        radius: 1000,
+        radius: 150,
         transitionType: $window.TransitionType.ENTER,
         notification: {
           id: this.getNextNotificationId(),
