@@ -2,12 +2,12 @@
   "name": "ionic-geofence",
   "version": "1.0.0",
   "license": "MIT",
-  "author": "Tomasz Subik",
+  "author": "Fabian Okeke",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cowbell/ionic-geofence.git"
+    "url": "https://github.com/fnokeke/ionic-geofence"
   },
-  "description": "Geofence Sample Application Built With Ionic",
+  "description": "Geo Places Application Built With Ionic",
   "devDependencies": {
     "appium": "^1.4.13",
     "babel-core": "^6.4.5",
