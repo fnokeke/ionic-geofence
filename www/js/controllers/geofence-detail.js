@@ -200,3 +200,4 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
 // TODO: refactor ionicLoading in validate()
 // TODO: make it easy to change css theme
 // TODO: alert user if no network while using google maps autocomplete
+// TODO: show radius in address chosen

@@ -1,6 +1,6 @@
 // Geo Places App
 
-angular.module("ionic-geofence", ["ionic", "leaflet-directive"]).run(function($window, $document, $ionicLoading, $state,
+angular.module("ionic-geofence", ["ionic"]).run(function($window, $document, $ionicLoading, $state,
   $ionicPlatform, $log, $rootScope, GeofencePluginMock) {
 
   $ionicPlatform.ready(function() {
