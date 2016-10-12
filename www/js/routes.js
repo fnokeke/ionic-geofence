@@ -1,41 +1,42 @@
-angular.module("ionic-geofence").config(function ($stateProvider, $urlRouterProvider) {
-    $stateProvider
-        .state("geofences", {
-            url: "/geofences",
-            templateUrl: "views/geofences.html",
-            controller: "GeofencesCtrl"
-        })
-        .state("geofence-new", {
-            url: "/geofence/new/:longitude,:latitude",
-            templateUrl: "views/geofence.html",
-            controller: "GeofenceCtrl",
+angular.module("ionic-geofence").config(function($stateProvider, $urlRouterProvider) {
+  $stateProvider
+    .state("geofences", {
+      url: "/geofences",
+      templateUrl: "views/geofences.html",
+      controller: "GeofencesCtrl"
+    })
+    .state("geofence-new", {
+      url: "/geofence/new/:longitude,:latitude",
+      templateUrl: "views/geofence.html",
+      controller: "GeofenceCtrl",
 
-            resolve: {
-                geofence: function ($stateParams, Geofence) {
-                    return Geofence.create({
-                        longitude: parseFloat($stateParams.longitude),
-                        latitude: parseFloat($stateParams.latitude)
-                    });
-                }
-            }
-        })
-        .state("geofence-edit", {
-            url: "geofence/:geofenceId",
-            templateUrl: "views/geofence.html",
-            controller: "GeofenceCtrl",
+      resolve: {
+        geofenceStateParam: function($stateParams, Geofence) {
+          return Geofence.create({
+            longitude: parseFloat($stateParams.longitude),
+            latitude: parseFloat($stateParams.latitude)
+          });
+        }
+      }
+    })
+    .state("geofence-edit", {
+      url: "geofence/:geofenceId",
+      templateUrl: "views/geofence.html",
+      controller: "GeofenceCtrl",
 
-            resolve: {
-                geofence: function ($stateParams, Geofence, $q) {
-                    var geofence = Geofence.findById($stateParams.geofenceId);
+      resolve: {
+        geofenceStateParam: function($stateParams, Geofence, $q) {
+          var geofence = Geofence.findById($stateParams.geofenceId);
 
-                    if (geofence) {
-                        return $q.when(angular.copy(geofence));
-                    }
+          if (geofence) {
+            console.log('edit geofence: ', geofence);
+            return $q.when(angular.copy(geofence));
+          }
 
-                    return $q.reject("Cannot find geofence with id: " + $stateParams.geofenceId);
-                }
-            }
-        });
+          return $q.reject("Cannot find geofence with id: " + $stateParams.geofenceId);
+        }
+      }
+    });
 
-    $urlRouterProvider.otherwise("/geofences");
+  $urlRouterProvider.otherwise("/geofences");
 });

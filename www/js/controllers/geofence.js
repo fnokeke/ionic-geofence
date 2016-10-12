@@ -1,20 +1,31 @@
-angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $ionicLoading, $window, $state, geofence,
-  Geofence) {
-  $scope.geofence = geofence;
-  $scope.TransitionType = $window.TransitionType;
+angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $ionicLoading, $window, $state,
+  geofenceStateParam, Geofence) {
+  console.log('geofenceStateParam: ', geofenceStateParam);
 
-  $scope.center = {
-    // lat: 40.74095729999999, // default: Manhattan, NY
-    // lng: -74.00211869999998,
-    lat: $scope.geofence.latitude,
-    lng: $scope.geofence.longitude,
-    zoom: 12
+  var
+    gapi,
+    mapOptions;
+
+  gapi = $window.google.maps;
+
+  mapOptions = {
+    center: {
+      lat: 40.74095729999999,
+      lng: -74.00211869999998,
+    },
+    zoom: 13,
+    disableDefaultUI: true, // DISABLE MAP TYPE
+    scrollwheel: false
   };
+
+  $scope.map = new gapi.Map(document.getElementById('map'), mapOptions);
+  $scope.geofence = geofenceStateParam;
+  $scope.TransitionType = $window.TransitionType;
 
   $scope.markers = {
     marker: {
       draggable: true,
-      message: geofence.notification.title,
+      message: $scope.geofence.notification.title,
       lat: $scope.geofence.latitude,
       lng: $scope.geofence.longitude,
       icon: {}
@@ -24,38 +35,19 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
   $scope.paths = {
     circle: {
       type: "circle",
-      radius: geofence.radius,
+      radius: $scope.geofence.radius,
       latlngs: $scope.markers.marker,
       clickable: false
     }
   };
 
-  map_and_geolocate();
+  add_autocomplete_address($scope.map);
 
-  function map_and_geolocate() {
+  function add_autocomplete_address(map) {
     var
-      gapi,
-      mapOptions,
-      map,
-      input,
       defaultBounds,
       options,
       autocomplete;
-
-    gapi = $window.google.maps;
-
-    mapOptions = {
-      center: {
-        lat: $scope.geofence.latitude,
-        lng: $scope.geofence.longitude,
-        // lat: 40.74095729999999,
-        // lng: -74.00211869999998,
-      },
-      zoom: 13,
-      disableDefaultUI: true, // DISABLE MAP TYPE
-      scrollwheel: false
-    };
-    map = new gapi.Map(document.getElementById('map'), mapOptions);
 
     // Bias the autocomplete object to the user's geographical location FIXME: why auto-location not working for maps
     // as supplied by the browser's 'navigator.geolocation' object.
@@ -64,53 +56,61 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
       bounds: defaultBounds,
       types: ['address']
     };
+    autocomplete = new gapi.places.Autocomplete(document.getElementById('autocomplete_field'), options);
 
-    input = document.getElementById('autocomplete_field');
-    autocomplete = new gapi.places.Autocomplete(input, options);
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(function(position) {
-    //     var geolocation, circle;
-    //
-    //     geolocation = {
-    //       lat: position.coords.latitude,
-    //       lng: position.coords.longitude
-    //     };
-    //
-    //     circle = new gapi.Circle({
-    //       center: geolocation,
-    //       radius: position.coords.accuracy
-    //     });
-    //
-    //     autocomplete.setBounds(circle.getBounds());
-    //   });
-    // }
-    //
     gapi.event.addListener(autocomplete, 'place_changed', function() {
+      console.log('place_changed listener triggered...');
+      console.assert(autocomplete);
 
-      var infowindow = new gapi.InfoWindow();
       var place = autocomplete.getPlace();
       if (!place.geometry) {
         return;
       }
 
       if (place.geometry.location) {
-        map.fitBounds(place.geometry.viewport);
-        console.log('place chosen: ', place.formatted_address);
+        console.log('place: ', place.formatted_address);
+        console.log('place latLng: ', '(' + place.geometry.location.lat() + ',' + place.geometry.location.lng() +
+          ')');
 
         $scope.geofence.latitude = place.geometry.location.lat();
         $scope.geofence.longitude = place.geometry.location.lng();
         $scope.geofence.notification.text = place.formatted_address;
+        add_marker($scope.map, $scope.geofence);
 
       } else {
         console.log('Error no place geometry: ', place.geometry);
         map.setCenter(place.geometry.location);
         map.setZoom(17);
       }
+    });
+  }
 
-      // Set the position of the marker using the place ID and location.
-      var marker = new gapi.Marker({
+  // $scope.$watch('geofence', function() {
+  //   console.log('******************');
+  //   console.log('geofence changed!!!');
+  //   console.log('******************');
+  // });
+
+  add_marker($scope.map, $scope.geofence);
+
+  function add_marker(map, geofence) {
+    console.log('marker to add: ', geofence);
+    var
+      latLng,
+      marker,
+      title,
+      infowindow;
+
+    latLng = {
+      lat: geofence.latitude,
+      lng: geofence.longitude,
+    };
+    map.setCenter(latLng);
+
+    if (geofence.notification.text) {
+      marker = new gapi.Marker({
         map: map,
-        position: place.geometry.location,
+        position: latLng,
         icon: {
           url: 'https://maps.gstatic.com/mapfiles/circle.png',
           anchor: new gapi.Point(10, 10),
@@ -118,15 +118,13 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
         }
       });
 
-      marker.setPlace(({
-        placeId: place.place_id,
-        location: place.geometry.location
-      }));
+      infowindow = new gapi.InfoWindow();
 
-      marker.setVisible(true);
-      infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + place.formatted_address + '</div>');
+      title = geofence.notification.title || geofence.notification.text.split(',')[0];
+      infowindow.setContent('<div><strong>' + title + '</strong><br>' + geofence.notification.text + '</div>');
+      infowindow.setPosition(latLng);
       infowindow.open(map, marker);
-    });
+    }
 
   }
 
@@ -190,7 +188,7 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
     }
 
     if (!$scope.geofence.notification.text) {
-      console.log('geofence.notification.text: ', geofence.notification.text);
+      console.log('geofence.notification.text: ', $scope.geofence.notification.text);
       $ionicLoading.show({
         template: "Please enter your address.",
         duration: 3000
@@ -206,7 +204,9 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
       return false;
     }
 
-
     return true;
   }
 });
+
+// FIXME: InvalidValueError: not a LatLngBounds or LatLngBoundsLiteral: not an Object
+// TODO: replace magic numbers with defined constants

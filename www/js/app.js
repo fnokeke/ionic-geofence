@@ -1,4 +1,4 @@
-// Ionic Geofence example App
+// Geo Places App
 
 angular.module("ionic-geofence", ["ionic", "leaflet-directive"]).run(function($window, $document, $ionicLoading, $state,
   $ionicPlatform, $log, $rootScope, GeofencePluginMock) {
@@ -19,6 +19,12 @@ angular.module("ionic-geofence", ["ionic", "leaflet-directive"]).run(function($w
       $log.warn("Google Places plugin not found.");
     } else {
       $log.log("Google Places plugin successfully loaded");
+    }
+
+    if (window.Connection === undefined) {
+      $log.warn("Your ionic app has no internet connection");
+    } else {
+      $log.log("Your app internet status: ", navigator.connection.type);
     }
 
     if ($window.geofence === undefined) {

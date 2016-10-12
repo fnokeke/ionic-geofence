@@ -7,8 +7,8 @@ angular.module("ionic-geofence").factory("Geofence", function($rootScope, $windo
     create: function(attributes) {
       var defaultGeofence = {
         id: $window.UUIDjs.create().toString(),
-        latitude: 50,
-        longitude: 50,
+        latitude: 40.74095729999999,
+        longitude: -74.00211869999998,
         radius: 1000,
         transitionType: $window.TransitionType.ENTER,
         notification: {

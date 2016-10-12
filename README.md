@@ -1,4 +1,4 @@
-# Ionic geofence sample project
+# Geo Places App
 
 [![Build Status](https://travis-ci.org/cowbell/ionic-geofence.svg?branch=master)](https://travis-ci.org/cowbell/ionic-geofence)
 

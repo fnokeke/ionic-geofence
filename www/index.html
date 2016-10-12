@@ -8,8 +8,10 @@
             content="default-src *;
                  script-src 'self' 'unsafe-inline' 'unsafe-eval'
                              localhost:*
+                             http://10.144.8.234:*
                              https://*.gstatic.com
                              https://*.googleapis.com
+                             https://cdnjs.cloudflare.com
                              ;
                  style-src  'self' 'unsafe-inline'
                              localhost:*
@@ -20,7 +22,6 @@
                              data: http://*.mapbox.com
                              http://*.openstreetmap.org
                              https://*.gstatic.com
-                             https://*.gstatic.com/mapfiles/*
                              https://*.googleapis.com
                              ;
   ">
@@ -60,7 +61,6 @@
   <script src="js/services/geolocation.js"></script>
   <script src="js/directives/hide-keyboard-on-enter.js"></script>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDF0JPfkVdjOVjdw9p_rjrDxCkuPr-0iMo&libraries=places"/></script>
-
 </body>
 
 </html>
