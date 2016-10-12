@@ -25,11 +25,20 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
     GeoLocation.getCurrentPosition()
       .then(
         function(position) {
+          var lat, lng;
+          lat = position.coords.latitude;
+          lng = position.coords.longitude;
+
           $log.info("Current position found", position);
 
+          if (lat === 31.0461 && lng === 34) { // sometimes browser give wrong geolocation so use NYC
+            lat = 40.74095729999999;
+            lng = -74.00211869999998;
+          }
+
           $state.go("geofence-new", {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
+            latitude: lat,
+            longitude: lng
           });
         },
         function(reason) {
