@@ -1,5 +1,5 @@
 angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlatform, $window, $scope,
-  $ionicActionSheet, $timeout, $log, $state, Geolocation, Geofence, $ionicLoading) {
+  $ionicActionSheet, $timeout, $log, $state, Geolocation, Geoservice, $ionicLoading) {
 
   $ionicLoading.show({
     template: "Getting geofences from device...",
@@ -8,7 +8,7 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
 
   $scope.geofences = [];
 
-  Geofence.getAll().then(function(geofences) {
+  Geoservice.getAll().then(function(geofences) {
     $ionicLoading.hide();
     $scope.geofences = geofences;
   }, function(reason) {
@@ -17,11 +17,6 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
   });
 
   $scope.createNew = function() {
-    // $state.go("geofence-new", {
-    //   latitude: 40.74095729999999,
-    //   longitude: -74.00211869999998
-    // });
-
     $ionicLoading.show({
       template: "Loading map...",
       hideOnStateChange: true
@@ -53,7 +48,7 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
   };
 
   $scope.removeGeofence = function(geofence) {
-    Geofence.remove(geofence);
+    Geoservice.remove(geofence);
   };
 
   $scope.more = function() {
@@ -66,7 +61,7 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
       destructiveText: "<i class='icon ion-trash-b'></i> Delete all geofences",
       cancelText: "<i class='icon ion-android-cancel'></i> Cancel",
       destructiveButtonClicked: function() {
-        Geofence.removeAll();
+        Geoservice.removeAll();
         return true;
       },
       buttonClicked: function() {

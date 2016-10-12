@@ -1,5 +1,5 @@
 angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $ionicLoading, $window, $state,
-  geofenceStateParam, Geofence) {
+  geofenceStateParam, Geoservice) {
 
   var
     gapi,
@@ -154,7 +154,7 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
       // $scope.geofence.latitude = $scope.markers.marker.lat;
       // $scope.geofence.longitude = $scope.markers.marker.lng;
 
-      Geofence.addOrUpdate($scope.geofence).then(function() {
+      Geoservice.addOrUpdate($scope.geofence).then(function() {
         console.log('geofence added: ', $scope.geofence);
         $state.go("geofences");
       }, function(error) {

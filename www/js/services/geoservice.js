@@ -1,11 +1,11 @@
-angular.module("ionic-geofence").factory("Geofence", function($rootScope, $window, $q, $log, $ionicLoading) {
+angular.module("ionic-geofence").factory("Geoservice", function($rootScope, $window, $q, $log, $ionicLoading) {
 
   var geofenceService = {
     _geofences: [],
     _geofencesPromise: null,
 
     create: function(attributes) {
-      var defaultGeofence = {
+      var default_geofence = {
         id: $window.UUIDjs.create().toString(),
         latitude: 40.74095729999999,
         longitude: -74.00211869999998,
@@ -20,7 +20,7 @@ angular.module("ionic-geofence").factory("Geofence", function($rootScope, $windo
         }
       };
 
-      return angular.extend(defaultGeofence, attributes);
+      return angular.extend(default_geofence, attributes);
     },
 
     loadFromLocalStorage: function() {
