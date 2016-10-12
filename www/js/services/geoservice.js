@@ -1,4 +1,4 @@
-angular.module("ionic-geofence").factory("Geoservice", function($rootScope, $window, $q, $log, $ionicLoading) {
+angular.module("ionic-geofence").factory("GeoService", function($rootScope, $window, $q, $log, $ionicLoading) {
 
   var geofenceService = {
     _geofences: [],

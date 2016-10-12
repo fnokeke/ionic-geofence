@@ -1,5 +1,5 @@
 angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $ionicLoading, $window, $state,
-  geofenceStateParam, Geoservice) {
+  geofenceStateParam, GeoService) {
 
   var
     gapi,
@@ -58,8 +58,6 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
     autocomplete = new gapi.places.Autocomplete(document.getElementById('autocomplete_field'), options);
 
     gapi.event.addListener(autocomplete, 'place_changed', function() {
-      console.log('place_changed listener triggered...');
-      console.assert(autocomplete);
 
       var place = autocomplete.getPlace();
       if (!place.geometry) {
@@ -154,7 +152,7 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
       // $scope.geofence.latitude = $scope.markers.marker.lat;
       // $scope.geofence.longitude = $scope.markers.marker.lng;
 
-      Geoservice.addOrUpdate($scope.geofence).then(function() {
+      GeoService.addOrUpdate($scope.geofence).then(function() {
         console.log('geofence added: ', $scope.geofence);
         $state.go("geofences");
       }, function(error) {

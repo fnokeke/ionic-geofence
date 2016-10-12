@@ -11,8 +11,8 @@ angular.module("ionic-geofence").config(function($stateProvider, $urlRouterProvi
       controller: "GeofenceCtrl",
 
       resolve: {
-        geofenceStateParam: function($stateParams, Geoservice) {
-          return Geoservice.create({
+        geofenceStateParam: function($stateParams, GeoService) {
+          return GeoService.create({
             longitude: parseFloat($stateParams.longitude),
             latitude: parseFloat($stateParams.latitude)
           });
@@ -25,8 +25,8 @@ angular.module("ionic-geofence").config(function($stateProvider, $urlRouterProvi
       controller: "GeofenceCtrl",
 
       resolve: {
-        geofenceStateParam: function($stateParams, Geoservice, $q) {
-          var geofence = Geoservice.findById($stateParams.geofenceId);
+        geofenceStateParam: function($stateParams, GeoService, $q) {
+          var geofence = GeoService.findById($stateParams.geofenceId);
 
           if (geofence) {
             console.log('edit geofence: ', geofence);

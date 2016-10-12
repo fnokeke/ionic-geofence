@@ -272,7 +272,7 @@
             });
             if (centerModel.autoDiscover === true) {
               map.on('locationerror', function () {
-                $log.warn('[AngularJS - Leaflet] The Geolocation API is unauthorized on this page.');
+                $log.warn('[AngularJS - Leaflet] The GeoLocation API is unauthorized on this page.');
                 if (isValidCenter(centerModel)) {
                   map.setView([
                     centerModel.lat,

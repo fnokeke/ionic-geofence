@@ -1,4 +1,4 @@
-angular.module("ionic-geofence").factory("Geolocation", function($q, $interval) {
+angular.module("ionic-geofence").factory("GeoLocation", function($q, $interval) {
   var currentPositionCache;
 
   return {
