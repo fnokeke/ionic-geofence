@@ -8,7 +8,7 @@ angular.module("ionic-geofence").config(function($stateProvider, $urlRouterProvi
     .state("geofence-new", {
       url: "/geofence/new/:longitude,:latitude",
       templateUrl: "templates/geofence-detail.html",
-      controller: "GeofenceCtrl",
+      controller: "GeofenceDetailCtrl",
 
       resolve: {
         geofenceStateParam: function($stateParams, GeoService) {
@@ -22,7 +22,7 @@ angular.module("ionic-geofence").config(function($stateProvider, $urlRouterProvi
     .state("geofence-edit", {
       url: "geofence/:geofenceId",
       templateUrl: "templates/geofence-detail.html",
-      controller: "GeofenceCtrl",
+      controller: "GeofenceDetailCtrl",
 
       resolve: {
         geofenceStateParam: function($stateParams, GeoService, $q) {

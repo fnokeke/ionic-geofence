@@ -1,4 +1,4 @@
-angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $ionicLoading, $window, $state,
+angular.module("ionic-geofence").controller("GeofenceDetailCtrl", function($scope, $ionicLoading, $window, $state,
   geofenceStateParam, GeoService) {
 
   var
