@@ -2,12 +2,12 @@ angular.module("ionic-geofence").config(function($stateProvider, $urlRouterProvi
   $stateProvider
     .state("geofences", {
       url: "/geofences",
-      templateUrl: "views/geofences.html",
+      templateUrl: "templates/geofences.html",
       controller: "GeofencesCtrl"
     })
     .state("geofence-new", {
       url: "/geofence/new/:longitude,:latitude",
-      templateUrl: "views/geofence.html",
+      templateUrl: "templates/geofence.html",
       controller: "GeofenceCtrl",
 
       resolve: {
@@ -21,7 +21,7 @@ angular.module("ionic-geofence").config(function($stateProvider, $urlRouterProvi
     })
     .state("geofence-edit", {
       url: "geofence/:geofenceId",
-      templateUrl: "views/geofence.html",
+      templateUrl: "templates/geofence.html",
       controller: "GeofenceCtrl",
 
       resolve: {

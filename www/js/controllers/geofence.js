@@ -198,7 +198,6 @@ angular.module("ionic-geofence").controller("GeofenceCtrl", function($scope, $io
   }
 });
 
-// FIXME: InvalidValueError: not a LatLngBounds or LatLngBoundsLiteral: not an Object
 // TODO: replace magic numbers with defined constants
 // TODO: refactor ionicLoading in validate()
 // TODO: make it easy to change css theme
