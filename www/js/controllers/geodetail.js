@@ -31,8 +31,6 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
     fillOpacity: 0.35
   });
 
-  console.log('just starting radius: ', geofence.radius);
-
   $scope.marker = new gapi.Marker({
     map: $scope.map,
     icon: {
@@ -197,5 +195,4 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
 
 // TODO: replace magic numbers with defined constants
 // TODO: refactor ionicLoading in validate()
-// TODO: make it easy to change css theme
 // TODO: alert user if no network while using google maps autocomplete
