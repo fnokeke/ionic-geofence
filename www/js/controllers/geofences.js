@@ -1,5 +1,5 @@
 angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlatform, $window, $scope,
-  $ionicActionSheet, $timeout, $log, $state, GeoLocation, GeoService, $ionicLoading) {
+  $ionicActionSheet, $timeout, $log, $state, GeoLocation, GeoService, $ionicLoading, $interval) {
 
   $ionicLoading.show({
     template: "Getting geofences from device...",
@@ -17,14 +17,18 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
   });
 
   $scope.createNew = function() {
+
     $ionicLoading.show({
       template: "Loading map...",
+      duration: 5000,
       hideOnStateChange: true
     });
+
 
     GeoLocation.getCurrentPosition()
       .then(
         function(position) {
+
           var lat, lng;
           lat = position.coords.latitude;
           lng = position.coords.longitude;
