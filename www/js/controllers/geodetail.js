@@ -1,5 +1,7 @@
-angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $ionicLoading, $window, $state,
-  geofenceStateParam, GeoService) {
+angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $ionicPlatform, $window,
+  $state, geofenceStateParam, Display, Connection, GeoService) {
+
+  Connection.start_watching();
 
   var
     gapi,
@@ -17,6 +19,7 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
     scrollwheel: false
   };
 
+  $scope.is_ios = $ionicPlatform.is('ios');
   $scope.map = new gapi.Map(document.getElementById('map'), mapOptions);
   $scope.geofence = geofenceStateParam;
   $scope.TransitionType = $window.TransitionType;
@@ -41,8 +44,6 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
   });
 
   $scope.updateRadius = function() {
-    console.log('addradius called');
-
     $scope.circle.bindTo('center', $scope.marker, 'position');
     var radius = $scope.geofence.radius ? parseInt($scope.geofence.radius) : 100;
     $scope.circle.setRadius(radius);
@@ -118,6 +119,8 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
   }
 
   $scope.disableTap = function() {
+    console.log('data-tap-disabled');
+
     var container = document.getElementsByClassName('pac-container');
     angular.element(container).attr('data-tap-disabled', 'true');
     var backdrop = document.getElementsByClassName('backdrop');
@@ -125,6 +128,7 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
 
     angular.element(container).on("click", function() {
       document.getElementById('autocomplete_field').blur();
+      console.log('blur complete');
     });
   };
 
@@ -153,10 +157,7 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
         console.log('geofence added: ', $scope.geofence);
         $state.go("geofences");
       }, function(error) {
-        $ionicLoading.show({
-          template: "Failed to add geofence, check if your location provider is enabled",
-          duration: 3000
-        });
+        Display.prompt('Failed to add geofence, check if your location provider is enabled.');
         console.log("Failed to add geofence", error);
       });
     }
@@ -165,27 +166,18 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
   function validate() {
 
     if (!$scope.geofence.notification.title) {
-      $ionicLoading.show({
-        template: "Please enter some notification text.",
-        duration: 3000
-      });
+      Display.prompt('Please enter some notification text.');
       return false;
     }
 
     if (!$scope.geofence.notification.text) {
       console.log('geofence.notification.text: ', $scope.geofence.notification.text);
-      $ionicLoading.show({
-        template: "Please enter your address.",
-        duration: 3000
-      });
+      Display.prompt('Please enter your address.');
       return false;
     }
 
     if ($scope.geofence.transitionType === 0) {
-      $ionicLoading.show({
-        template: "You must select when you want notification. When entering or/and exiting region?",
-        duration: 3000
-      });
+      Display.prompt('You must select when you want notification. When entering or/and exiting region?');
       return false;
     }
 
@@ -194,5 +186,5 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
 });
 
 // TODO: replace magic numbers with defined constants
-// TODO: refactor ionicLoading in validate()
 // TODO: alert user if no network while using google maps autocomplete
+// TODO: stop loading map msg in case location doesn't load

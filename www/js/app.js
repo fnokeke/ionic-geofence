@@ -18,7 +18,7 @@ angular.module("ionic-geofence", ["ionic"]).run(function($window, $document, $io
       $log.log("Google Places plugin successfully loaded");
     }
 
-    if (window.Connection === undefined) {
+    if ($window.Connection === undefined) {
       $log.warn("Your ionic app has no internet connection");
     } else {
       $log.log("Your app internet status: ", navigator.connection.type);

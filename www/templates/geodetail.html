@@ -22,8 +22,15 @@
     <div>
       <label class="item item-input controls">
         <i class="icon ion-search placeholder-icon"></i>
-        <input id="autocomplete_field" type="text" placeholder="Your address" data-tap-disabled="true" ng-change='disableTap()' ng-model="geofence.notification.text">
+
+        <!-- data-tap-disabled not needed for ios otherwise it'll disable keyboard  -->
+        <input type="text" id="autocomplete_field" placeholder="Your address"
+        ng-change='disableTap()'
+        data-tap-disabled="{{is_ios ? false : true }}"
+        ng-model="geofence.notification.text">
       </label>
+
+
     </div>
 
     <div class="range" data-tap-disabled="true">

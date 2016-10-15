@@ -1,4 +1,4 @@
-angular.module("ionic-geofence").factory("GeoService", function($rootScope, $window, $q, $log, $ionicLoading) {
+angular.module("ionic-geofence").factory("GeoService", function($rootScope, $window, $q, $log, Display) {
 
   var geofenceService = {
     _geofences: [],
@@ -105,39 +105,31 @@ angular.module("ionic-geofence").factory("GeoService", function($rootScope, $win
 
     remove: function(geofence) {
       var self = this;
+      Display.prompt('Removing geofence...');
 
-      $ionicLoading.show({
-        template: "Removing geofence..."
-      });
       $window.geofence.remove(geofence.id).then(function() {
-        $ionicLoading.hide();
+        Display.hide_prompt();
+
         self._geofences.splice(self._geofences.indexOf(geofence), 1);
         self.saveToLocalStorage();
       }, function(reason) {
-        $log.error("Error while removing geofence", reason);
-        $ionicLoading.show({
-          template: "Error while removing geofence",
-          duration: 1500
-        });
+        $log.error('Error while removing geofence', reason);
+        Display.prompt('Error while removing geofence.');
       });
     },
 
     removeAll: function() {
       var self = this;
 
-      $ionicLoading.show({
-        template: "Removing all geofences..."
-      });
+      Display.prompt('Removing all geofences...');
       $window.geofence.removeAll().then(function() {
-        $ionicLoading.hide();
+        Display.hide_prompt();
+
         self._geofences.length = 0;
         self.saveToLocalStorage();
       }, function(reason) {
-        $log.error("Error while removing all geofences", reason);
-        $ionicLoading.show({
-          template: "Error",
-          duration: 1500
-        });
+        $log.error('Error while removing all geofences: ', reason);
+        Display.prompt('Error while removing all geofences.');
       });
     },
 
