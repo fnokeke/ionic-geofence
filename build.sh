@@ -13,7 +13,7 @@ ionic build ios
 echo "*************************"
 echo "Now copying android to remote server..."
 echo "*************************"
-# scp /Users/fnokeke/dev/ionic-apps/ionic-geofence/platforms/android/build/outputs/apk/android-debug.apk fabian@slm.smalldata.io:~/gmatReminderApps
+# scp /Users/fnokeke/dev/ionic-apps/ionic-geofence/platforms/android/build/outputs/apk/android-debug.apk fabian@slm.smalldata.io:~/mobile_apps
 
 
 echo "*************************"
