@@ -63,8 +63,7 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
     // as supplied by the browser's 'navigator.geolocation' object.
     defaultBounds = new gapi.LatLngBounds(new gapi.LatLng(40.74095729999999, -74.00211869999998));
     options = {
-      bounds: defaultBounds,
-      types: ['address']
+      bounds: defaultBounds
     };
     autocomplete = new gapi.places.Autocomplete(document.getElementById('autocomplete_field'), options);
 
