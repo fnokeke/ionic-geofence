@@ -18,28 +18,23 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
   $scope.createNew = function() {
 
     Display.prompt('Loading map...', true);
-    GeoLocation.getCurrentPosition()
-      .then(
-        function(position) {
+    GeoLocation.getCurrentPosition().then(
+      function(position) {
+        var lat, lng;
+        lat = position.coords.latitude;
+        lng = position.coords.longitude;
 
-          var lat, lng;
-          lat = position.coords.latitude;
-          lng = position.coords.longitude;
+        console.log('Current geoposition: ', position.coords);
 
-          if (lat === 31.0461 && lng === 34) { // sometimes browser give wrong geolocation so use NYC
-            lat = 40.74095729999999;
-            lng = -74.00211869999998;
-          }
-
-          $state.go("geofence-new", {
-            latitude: lat,
-            longitude: lng
-          });
-        },
-        function(reason) {
-          $log.error("Cannot obtain current location", reason);
-          Display.prompt('Cannot obtain current location');
+        $state.go("geofence-new", {
+          latitude: lat,
+          longitude: lng
         });
+      },
+      function(reason) {
+        $log.error("Cannot obtain current location", reason);
+        Display.prompt('Cannot obtain current location');
+      });
   };
 
   $scope.editGeofence = function(geofence) {

@@ -35,26 +35,27 @@ angular.module("ionic-geofence", ["ionic"]).run(function($window, $document, $io
     }
 
     $window.geofence.onTransitionReceived = function(geofences) {
-      $log.log(geofences);
-      if (geofences) {
-        $rootScope.$apply(function() {
-          geofences.forEach(function(geo) {
-            geo.notification = geo.notification || {
-              title: "Geofence transition",
-              text: "Without notification"
-            };
-            $ionicLoading.show({
-              template: geo.notification.title + ": " + geo.notification.text,
-              noBackdrop: true,
-              duration: 2000
-            });
-          });
-        });
-      }
+      $log.log('transition received geofences:', geofences);
+
+      // if (geofences) {
+      //   $rootScope.$apply(function() {
+      //     geofences.forEach(function(geo) {
+      //       geo.notification = geo.notification || {
+      //         title: "Geofence transition",
+      //         text: "Without notification"
+      //       };
+      //       $ionicLoading.show({
+      //         template: geo.notification.title + ": " + geo.notification.text,
+      //         noBackdrop: true,
+      //         duration: 2000
+      //       });
+      //     });
+      //   });
+      // }
     };
 
     $window.geofence.onNotificationClicked = function(notificationData) {
-      $log.log(notificationData);
+      $log.log('notificationData in app.js:', notificationData);
 
       if (notificationData) {
         $rootScope.$apply(function() {

@@ -22,6 +22,7 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
   $scope.is_ios = $ionicPlatform.is('ios');
   $scope.map = new gapi.Map(document.getElementById('map'), mapOptions);
   $scope.geofence = geofenceStateParam;
+  $scope.geofence.notification.vibrate = [0]; //disable notification vibration
   $scope.TransitionType = $window.TransitionType;
 
   $scope.circle = new gapi.Circle({
@@ -140,10 +141,12 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
   };
 
   $scope.toggleWhenIgetCloser = function() {
+    console.log('When I get closer called...');
     $scope.geofence.transitionType ^= $window.TransitionType.ENTER;
   };
 
   $scope.toggleWhenIamLeaving = function() {
+    console.log('Just leaving called...');
     $scope.geofence.transitionType ^= $window.TransitionType.EXIT;
   };
 
