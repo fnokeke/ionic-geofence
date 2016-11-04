@@ -1,4 +1,4 @@
-angular.module("ionic-geofence").factory("GeoService", function($rootScope, $window, $q, $log, Display) {
+angular.module("ionic-geofence").factory("GeoService", function($rootScope, $window, $q, $log, Display, LogData) {
 
   var geofenceService = {
     _geofences: [],
@@ -7,9 +7,11 @@ angular.module("ionic-geofence").factory("GeoService", function($rootScope, $win
     create: function(attributes) {
       var default_geofence = {
         id: $window.UUIDjs.create().toString(),
-        latitude: 40.74095729999999,
-        longitude: -74.00211869999998,
+        latitude: '',
+        longitude: '',
         radius: 150,
+        title: '',
+        text: '',
         transitionType: $window.TransitionType.ENTER,
         notification: {
           id: this.getNextNotificationId(),
@@ -44,14 +46,15 @@ angular.module("ionic-geofence").factory("GeoService", function($rootScope, $win
     },
 
     loadFromDevice: function() {
-      var self = this;
-
-      if ($window.geofence && $window.geofence.getWatched) {
-        return $window.geofence.getWatched().then(function(geofencesJson) {
-          self._geofences = angular.fromJson(geofencesJson);
-          return self._geofences;
-        });
-      }
+      // var self = this;
+      //
+      // if ($window.geofence && $window.geofence.getWatched) {
+      //   return $window.geofence.getWatched().then(function(geofencesJson) {
+      //     console.log('geofencesJson: ', JSON.parse(geofencesJson));
+      //     self._geofences = angular.fromJson(geofencesJson);
+      //     return self._geofences;
+      //   });
+      // }
 
       return this.loadFromLocalStorage();
     },
@@ -77,6 +80,8 @@ angular.module("ionic-geofence").factory("GeoService", function($rootScope, $win
       var self = this;
 
       return $window.geofence.addOrUpdate(geofence).then(function() {
+        // console.log('setting geofence notification to {}');
+
         var searched = self.findById(geofence.id);
 
         if (!searched) {
@@ -88,6 +93,12 @@ angular.module("ionic-geofence").factory("GeoService", function($rootScope, $win
         }
 
         self.saveToLocalStorage();
+
+        var dd = new Date();
+        dd.setTime(dd.getTime() - 240 * 60 * 60); // NYC timezone
+        dd = ' (' + dd.toLocaleString() + ')';
+        LogData.save('added: ' + geofence.title.substr(0, 20) + dd);
+
       });
     },
 
@@ -112,6 +123,12 @@ angular.module("ionic-geofence").factory("GeoService", function($rootScope, $win
 
         self._geofences.splice(self._geofences.indexOf(geofence), 1);
         self.saveToLocalStorage();
+
+        var dd = new Date();
+        dd.setTime(dd.getTime() - 240 * 60 * 60); // NYC timezone
+        dd = ' (' + dd.toLocaleString() + ')';
+        LogData.save('removed: ' + geofence.title.substr(0, 20) + dd);
+
       }, function(reason) {
         $log.error('Error while removing geofence', reason);
         Display.prompt('Error while removing geofence.');

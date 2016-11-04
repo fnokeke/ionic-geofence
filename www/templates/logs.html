@@ -1,0 +1,35 @@
+<ion-view view-title="Logs" cache-view="false">
+
+  <ion-header-bar class="header" align-title="left">
+    <h1 class="title">Geo Places</h1>
+    <div class="buttons pull-right">
+      <button class="button pull-right button-icon icon ion-plus" ng-click="createNew()"></button>
+      <button class="button pull-right button-icon icon ion-more" ng-click="more()"></button>
+    </div>
+  </ion-header-bar>
+
+  <ion-header-bar class="header" align-title="left">
+    <div class="buttons pull-left">
+      <button class="button button-icon" ui-sref="geofences">
+        <i class="ion-chevron-left"></i>
+      </button>
+    </div>
+    <h1 class="title">Logs</h1>
+    <div class="buttons pull-right">
+      <button class="button pull-right button-icon icon ion-refresh" ng-click="refresh()"></button>
+    </div>
+  </ion-header-bar>
+
+  <ion-content>
+    <ion-list can-swipe="true">
+      <ion-item class="item item-icon-right" ng-repeat="log in logs">
+        <p> {{ log }} </p>
+      </ion-item>
+    </ion-list>
+    <div class="card" ng-if="logs.length == 0">
+      <div class="item item-text-wrap">
+        No logs added yet.
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

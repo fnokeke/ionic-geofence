@@ -1,21 +1,36 @@
-angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlatform, $window, $scope,
-  $ionicActionSheet, $timeout, $log, $state, GeoLocation, GeoService, $interval, Display, Connection) {
-
-  Connection.start_watching();
+angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlatform, $window, $scope, $cordovaNetwork,
+  $rootScope, $ionicActionSheet, $timeout, $log, $state, GeoLocation, GeoService, $interval, Display) {
 
   Display.prompt('Getting geofences from device...');
 
   $scope.geofences = [];
 
-  GeoService.getAll().then(function(geofences) {
-    Display.hide_prompt();
-    $scope.geofences = geofences;
-  }, function(reason) {
-    Display.hide_prompt();
-    $log.error("An Error has occured", reason);
+  GeoService.getAll().then(
+    function(geofences) {
+      Display.hide_prompt();
+      $scope.geofences = geofences;
+    },
+    function(error) {
+      Display.hide_prompt();
+      $log.error("An Error has occured", error);
+    });
+
+  $scope.is_disconnected = false;
+
+  $rootScope.$on('$cordovaNetwork:offline', function() {
+    $scope.is_disconnected = true;
+  });
+
+  $rootScope.$on('$cordovaNetwork:online', function() {
+    $scope.is_disconnected = false;
   });
 
   $scope.createNew = function() {
+
+    if ($scope.is_disconnected) {
+      Display.prompt('You need internet connection to add new geofences.');
+      return;
+    }
 
     Display.prompt('Loading map...', true);
     GeoLocation.getCurrentPosition().then(
@@ -23,8 +38,6 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
         var lat, lng;
         lat = position.coords.latitude;
         lng = position.coords.longitude;
-
-        console.log('Current geoposition: ', position.coords);
 
         $state.go("geofence-new", {
           latitude: lat,
@@ -38,6 +51,11 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
   };
 
   $scope.editGeofence = function(geofence) {
+    if ($scope.is_disconnected) {
+      Display.prompt('You need internet connection to edit geofence.');
+      return;
+    }
+
     $state.go("geofence-edit", {
       geofenceId: geofence.id
     });
@@ -48,12 +66,11 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
   };
 
   $scope.more = function() {
-    console.log('more option was just clicked');
     // Show the action sheet
     $ionicActionSheet.show({
       titleText: "More options",
       buttons: [{
-        text: "<i class='icon ion-checkmark-circled'></i> Test application"
+        text: "<i class='icon ion-checkmark-circled'></i> View Logs"
       }],
       destructiveText: "<i class='icon ion-trash-b'></i> Delete all geofences",
       cancelText: "<i class='icon ion-android-cancel'></i> Cancel",
@@ -62,8 +79,7 @@ angular.module("ionic-geofence").controller("GeofencesCtrl", function($ionicPlat
         return true;
       },
       buttonClicked: function() {
-        Display.prompt('Come back tmrw :D');
-        // window.location.href = "cdvtests/index.html";
+        $state.go('logs');
       }
     });
   };

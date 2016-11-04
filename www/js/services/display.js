@@ -17,16 +17,6 @@ angular.module("ionic-geofence").factory("Display", function($ionicLoading, $ion
 
     is_mobile: function() {
       return $ionicPlatform.is('android') || $ionicPlatform.is('ios');
-    },
-
-    show_toast: function(text) {
-      if (this.is_mobile()) {
-        $timeout(function() {
-          window.plugins.toast.showLongBottom(text);
-        }, 100);
-      } else {
-        console.log(text);
-      }
     }
 
   };

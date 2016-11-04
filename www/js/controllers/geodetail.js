@@ -1,7 +1,5 @@
-angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $ionicPlatform, $window,
-  $state, geofenceStateParam, Display, Connection, GeoService) {
-
-  Connection.start_watching();
+angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $ionicPlatform, $window, $state,
+  $rootScope, $cordovaNetwork, geofenceStateParam, Display, GeoService) {
 
   var
     gapi,
@@ -22,8 +20,17 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
   $scope.is_ios = $ionicPlatform.is('ios');
   $scope.map = new gapi.Map(document.getElementById('map'), mapOptions);
   $scope.geofence = geofenceStateParam;
-  $scope.geofence.notification.vibrate = [0]; //disable notification vibration
+  $scope.title = '';
   $scope.TransitionType = $window.TransitionType;
+  $scope.is_disconnected = false;
+
+  $rootScope.$on('$cordovaNetwork:offline', function() {
+    $scope.is_disconnected = true;
+  });
+
+  $rootScope.$on('$cordovaNetwork:online', function() {
+    $scope.is_disconnected = false;
+  });
 
   $scope.circle = new gapi.Circle({
     map: $scope.map,
@@ -69,7 +76,6 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
     autocomplete = new gapi.places.Autocomplete(document.getElementById('autocomplete_field'), options);
 
     gapi.event.addListener(autocomplete, 'place_changed', function() {
-
       var place = autocomplete.getPlace();
       if (!place.geometry) {
         return;
@@ -82,7 +88,8 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
 
         $scope.geofence.latitude = place.geometry.location.lat();
         $scope.geofence.longitude = place.geometry.location.lng();
-        $scope.geofence.notification.text = place.formatted_address;
+        $scope.geofence.text = place.formatted_address;
+
         add_marker($scope.map, $scope.geofence);
 
       } else {
@@ -107,17 +114,16 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
     };
     map.setCenter(latLng);
 
-    if (geofence.notification.text) {
+    if (geofence.text) {
       $scope.marker.setPosition(latLng);
       infowindow = new gapi.InfoWindow();
-      title = geofence.notification.title || geofence.notification.text.split(',')[0];
-      infowindow.setContent('<div><strong>' + title + '</strong><br>' + geofence.notification.text + '</div>');
+      title = geofence.title || geofence.text.split(',')[0];
+      infowindow.setContent('<div><strong>' + title + '</strong><br>' + geofence.text + '</div>');
       infowindow.setPosition(latLng);
       infowindow.open(map, $scope.marker);
     }
 
   }
-
   $scope.disableTap = function() {
     console.log('data-tap-disabled');
 
@@ -136,44 +142,46 @@ angular.module("ionic-geofence").controller("GeodetailCtrl", function($scope, $i
     return ($scope.geofence.transitionType & transitionType);
   };
 
-  $scope.isWhenGettingCloser = function() {
-    return $scope.geofence.transitionType === $window.TransitionType.ENTER;
-  };
-
   $scope.toggleWhenIgetCloser = function() {
-    console.log('When I get closer called...');
     $scope.geofence.transitionType ^= $window.TransitionType.ENTER;
   };
 
   $scope.toggleWhenIamLeaving = function() {
-    console.log('Just leaving called...');
     $scope.geofence.transitionType ^= $window.TransitionType.EXIT;
   };
 
   $scope.save = function() {
     if (validate()) {
       $scope.geofence.radius = parseInt($scope.geofence.radius);
-      $scope.geofence.notification.data = angular.copy($scope.geofence);
+
+      // activate default geofence notification but disable vibration
+      // this should only be used if you don't plan to passively tracking geotriggers
+      // or if you want to notify the user of transitions
+      $scope.geofence.notification = {
+        'title': $scope.geofence.title,
+        'text': $scope.geofence.text,
+        'vibration': [0]
+      };
+
+      console.log('geofence to save: ', $scope.geofence);
 
       GeoService.addOrUpdate($scope.geofence).then(function() {
-        console.log('geofence added: ', $scope.geofence);
         $state.go("geofences");
       }, function(error) {
-        Display.prompt('Failed to add geofence, check if your location provider is enabled.');
-        console.log("Failed to add geofence", error);
+        Display.prompt('Failed to add geofence. Contact admin.');
+        console.log("Failed to add geofence:", error);
       });
     }
   };
 
   function validate() {
-
-    if (!$scope.geofence.notification.title) {
+    if (!$scope.geofence.title) {
       Display.prompt('Please enter some notification text.');
       return false;
     }
 
-    if (!$scope.geofence.notification.text) {
-      console.log('geofence.notification.text: ', $scope.geofence.notification.text);
+    if (!$scope.geofence.text) {
+      console.log('geofence.text: ', $scope.geofence.text);
       Display.prompt('Please enter your address.');
       return false;
     }

@@ -16,6 +16,8 @@
   <allow-navigation href="https://*/*"/>
   <allow-navigation href="data:*"/>
   <allow-navigation href="http://10.0.0.166:8100"/>
+  <allow-navigation href="http://10.144.22.175:8100"/>
+  <allow-navigation href="http://10.144.31.138:8100"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>

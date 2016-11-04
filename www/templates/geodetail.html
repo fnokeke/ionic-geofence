@@ -12,7 +12,7 @@
   </ion-header-bar>
   <ion-content scroll="false">
     <label class="item item-input">
-      <input type="text" placeholder="Enter notification text" ng-model="geofence.notification.title" hide-keyboard-on-enter>
+      <input type="text" placeholder="Enter notification text" ng-model="geofence.title" hide-keyboard-on-enter>
     </label>
     <div class="button-bar">
       <a class="button" ng-class="isTransitionOfType(TransitionType.ENTER) ? 'button-positive' : 'button-light'" ng-click="toggleWhenIgetCloser()">
@@ -31,10 +31,8 @@
         <input type="text" id="autocomplete_field" placeholder="Your address"
         ng-change='disableTap()'
         data-tap-disabled="{{is_ios ? false : true }}"
-        ng-model="geofence.notification.text">
+        ng-model="geofence.text">
       </label>
-
-
     </div>
 
     <div class="range" data-tap-disabled="true">
@@ -43,6 +41,10 @@
       {{ geofence.radius }}m
     </div>
     <div id="map" data-tap-disabled="true" style="width: 100%; height: 75%"></div>
+
+    <div class="bar bar-footer bar-assertive" ng-show="is_disconnected">
+      <div class="title">Autocomplete needs internet connection.</div>
+    </div>
 
   </ion-content>
 </ion-view>

@@ -41,10 +41,10 @@
 <body ng-app="ionic-geofence">
   <ion-nav-view></ion-nav-view>
 
-  <!-- ionic/angularjs js -->
   <script src="lib/ionic/js/ionic.bundle.js"></script>
+  <script src="js/vendor/angular-resource.min.js"></script>
 
-  <!-- cordova script (this will be a 404 during development) -->
+  <script src="js/vendor/ng-cordova.min.js"></script>
   <script src="cordova.js"></script>
 
   <!-- your app's js -->
@@ -52,14 +52,15 @@
   <script src="js/routes.js"></script>
   <script src="js/controllers/geodetail.js"></script>
   <script src="js/controllers/geofences.js"></script>
+  <script src="js/controllers/logs.js"></script>
   <script src="js/services/geofence-plugin-mock.js"></script>
   <script src="js/services/geoservice.js"></script>
   <script src="js/services/geolocation.js"></script>
+  <script src="js/services/logdata.js"></script>
   <script src="js/services/display.js"></script>
-  <script src="js/services/connection.js"></script>
   <script src="js/directives/hide-keyboard-on-enter.js"></script>
   <script src="js/vendor/uuid.js"></script>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDF0JPfkVdjOVjdw9p_rjrDxCkuPr-0iMo&libraries=places"/></script>
+  <script src="js/vendor/google-places.js"></script>
 </body>
 
 </html>

@@ -1,9 +1,10 @@
 // Geo Places App
 
-angular.module("ionic-geofence", ["ionic"]).run(function($window, $document, $ionicLoading, $state,
-  $ionicPlatform, $log, $rootScope, GeofencePluginMock) {
+angular.module("ionic-geofence", ["ionic", "ngCordova"]).run(function($window, $document, $ionicLoading, $state,
+  $ionicPlatform, $cordovaLocalNotification, $log, $rootScope, GeofencePluginMock, LogData, GeoService) {
 
   $ionicPlatform.ready(function() {
+
     if ($window.cordova && $window.cordova.plugins.Keyboard) {
       $window.cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
@@ -18,12 +19,6 @@ angular.module("ionic-geofence", ["ionic"]).run(function($window, $document, $io
       $log.log("Google Places plugin successfully loaded");
     }
 
-    if ($window.Connection === undefined) {
-      $log.warn("Your ionic app has no internet connection");
-    } else {
-      $log.log("Your app internet status: ", navigator.connection.type);
-    }
-
     if ($window.geofence === undefined) {
       $log.warn("Geofence Plugin not found. Using mock instead.");
       $window.geofence = GeofencePluginMock;
@@ -34,39 +29,67 @@ angular.module("ionic-geofence", ["ionic"]).run(function($window, $document, $io
       navigator.splashscreen.hide();
     }
 
-    $window.geofence.onTransitionReceived = function(geofences) {
-      $log.log('transition received geofences:', geofences);
 
-      // if (geofences) {
-      //   $rootScope.$apply(function() {
-      //     geofences.forEach(function(geo) {
-      //       geo.notification = geo.notification || {
-      //         title: "Geofence transition",
-      //         text: "Without notification"
-      //       };
-      //       $ionicLoading.show({
-      //         template: geo.notification.title + ": " + geo.notification.text,
-      //         noBackdrop: true,
-      //         duration: 2000
-      //       });
-      //     });
-      //   });
-      // }
+    function notify(title, text) {
+      var now = new Date().getTime();
+      var no_of_secondes = 5;
+      var secs_from_now = new Date(now + (1000 * no_of_secondes));
+
+      var counter = localStorage.counter ? parseInt(localStorage.counter) % 20 : 0;
+      localStorage.counter = ++counter;
+
+      $cordovaLocalNotification.schedule({
+        title: title,
+        text: text,
+        at: secs_from_now,
+        id: counter
+      });
+    }
+
+    $window.geofence.onTransitionReceived = function(geofences) {
+      $log.log('transtn detected:', geofences);
+
+      var dd = new Date();
+      dd.setTime(dd.getTime() - 240 * 60 * 60); // NYC timezone
+      dd = ' (' + dd.toLocaleString() + ')';
+
+      if (geofences) {
+        $rootScope.$apply(function() {
+          geofences.forEach(function(arg) {
+            console.log('root arg: ', arg);
+
+            var geo = GeoService.findById(arg.id);
+            console.log('findById arg: ', geo);
+            var action = arg.transitionType === 1 ? 'enter' : 'exit';
+            notify(geo.title, action + ' ' + geo.text);
+
+            var dd = new Date();
+            dd.setTime(dd.getTime() - 240 * 60 * 60); // NYC timezone
+            dd = ' (' + dd.toLocaleString() + ')';
+            LogData.save(action + ' ' + geo.text.substr(0, 10) + ' ' + dd);
+
+          });
+        });
+      }
     };
 
-    $window.geofence.onNotificationClicked = function(notificationData) {
-      $log.log('notificationData in app.js:', notificationData);
+    $window.geofence.onNotificationClicked = function(geofence) {
+      $log.log('notificationData in app.js:', geofence);
 
-      if (notificationData) {
+      var dd = new Date();
+      dd.setTime(dd.getTime() - 240 * 60 * 60); // NYC timezone
+      dd = ' (' + dd.toLocaleString() + ')';
+
+      if (geofence) {
         $rootScope.$apply(function() {
           $ionicLoading.show({
-            template: "Notification clicked: " + notificationData.notification.text,
+            template: "Notification clicked: " + geofence.text,
             noBackdrop: true,
             duration: 2000
           });
 
           $state.go("geofence", {
-            geofenceId: notificationData.id
+            geofenceId: geofence.id
           });
         });
       }
@@ -75,7 +98,9 @@ angular.module("ionic-geofence", ["ionic"]).run(function($window, $document, $io
     $window.geofence.initialize(function() {
       $log.log("Geofence plugin initialized");
     });
+
   });
+
 
   $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
     $log.log("stateChangeError ", error, toState, toParams, fromState, fromParams);
