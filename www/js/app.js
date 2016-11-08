@@ -61,7 +61,10 @@ angular.module("ionic-geofence", ["ionic", "ngCordova"]).run(function($window, $
             var geo = GeoService.findById(arg.id);
             console.log('findById arg: ', geo);
             var action = arg.transitionType === 1 ? 'enter' : 'exit';
-            notify(geo.title, action + ' ' + geo.text);
+
+            if (localStorage.notify === 'true') {
+              notify(geo.title, action + ' ' + geo.text);
+            }
 
             var dd = new Date();
             dd.setTime(dd.getTime() - 240 * 60 * 60); // NYC timezone
@@ -70,6 +73,8 @@ angular.module("ionic-geofence", ["ionic", "ngCordova"]).run(function($window, $
 
           });
         });
+      } else {
+        LogData.save('No geofence exists ' + dd);
       }
     };
 
